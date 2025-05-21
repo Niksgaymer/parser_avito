@@ -355,21 +355,20 @@ class AvitoParse:
 
 
 if __name__ == '__main__':
+    import configparser
+
     token = os.getenv("TG_TOKEN")
-chat_id = os.getenv("CHAT_ID_TG")
+    chat_id = os.getenv("CHAT_ID_TG")
 
-requests.post(
-    f"https://api.telegram.org/bot{token}/sendMessage",
-    data={"chat_id": chat_id, "text": "✅ Парсер перезапущен и работает"}
-)
+    requests.post(
+        f"https://api.telegram.org/bot{token}/sendMessage",
+        data={"chat_id": chat_id, "text": "✅ Парсер перезапущен и работает"}
+    )
 
-import configparser
-
-config = configparser.ConfigParser()
-config.read("settings.ini", encoding="utf-8")
+    config = configparser.ConfigParser()
+    config.read("settings.ini", encoding="utf-8")
 
     try:
-        """Багфикс проблем с экранированием"""
         url = config["Avito"]["URL"].split(",")
     except Exception:
         with open('settings.ini', encoding="utf-8") as file:
@@ -377,9 +376,10 @@ config.read("settings.ini", encoding="utf-8")
             regex = r"http.+"
             url = re.findall(regex, line_url)
 
-    # Если запуск через докер
     if env_urls := os.getenv("URL_AVITO"):
         url = env_urls.split(" ")
+
+
 
     chat_ids = config["Avito"]["CHAT_ID"].split(",")
     token = config["Avito"]["TG_TOKEN"]
