@@ -365,8 +365,8 @@ requests.post(
 
 import configparser
 
-    config = configparser.ConfigParser()
-    config.read("settings.ini", encoding="utf-8")
+config = configparser.ConfigParser()
+config.read("settings.ini", encoding="utf-8")
 
     try:
         """Багфикс проблем с экранированием"""
