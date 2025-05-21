@@ -363,7 +363,7 @@ requests.post(
     data={"chat_id": chat_id, "text": "✅ Парсер перезапущен и работает"}
 )
 
-    import configparser
+import configparser
 
     config = configparser.ConfigParser()
     config.read("settings.ini", encoding="utf-8")
