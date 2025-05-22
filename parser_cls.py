@@ -357,14 +357,20 @@ class AvitoParse:
 if __name__ == '__main__':
     import configparser
 
-    token = os.getenv("TG_TOKEN")
-    chat_id = os.getenv("CHAT_ID_TG")
+    # 1. Стартовое уведомление через .env
+    startup_token = os.getenv("TG_TOKEN")
+    startup_chat_id = os.getenv("CHAT_ID_TG")
 
-    requests.post(
-        f"https://api.telegram.org/bot{token}/sendMessage",
-        data={"chat_id": chat_id, "text": "✅ Парсер перезапущен и работает"}
-    )
+    if startup_token and startup_chat_id:
+        try:
+            requests.post(
+                f"https://api.telegram.org/bot{startup_token}/sendMessage",
+                data={"chat_id": startup_chat_id, "text": "✅ Парсер перезапущен и работает"}
+            )
+        except Exception as err:
+            logger.warning(f"Не удалось отправить стартовое сообщение: {err}")
 
+    # 2. Чтение настроек из settings.ini
     config = configparser.ConfigParser()
     config.read("settings.ini", encoding="utf-8")
 
