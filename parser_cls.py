@@ -357,7 +357,7 @@ class AvitoParse:
 if __name__ == '__main__':
     import configparser
 
-    # 1. Стартовое уведомление через .env
+    # --- Стартовое уведомление через переменные окружения (.env) ---
     startup_token = os.getenv("TG_TOKEN")
     startup_chat_id = os.getenv("CHAT_ID_TG")
 
@@ -368,23 +368,32 @@ if __name__ == '__main__':
                 data={"chat_id": startup_chat_id, "text": "✅ Парсер перезапущен и работает"}
             )
         except Exception as err:
-            logger.warning(f"Не удалось отправить стартовое сообщение: {err}")
+            logger.warning(f"❗ Не удалось отправить стартовое сообщение: {err}")
 
-    # 2. Чтение настроек из settings.ini
+    # --- Чтение конфигурации из settings.ini ---
     config = configparser.ConfigParser()
     config.read("settings.ini", encoding="utf-8")
 
+    # --- Получение URL ---
     try:
         url = config["Avito"]["URL"].split(",")
     except Exception:
-        with open('settings.ini', encoding="utf-8") as file:
-            line_url = file.readlines()[1]
-            regex = r"http.+"
-            url = re.findall(regex, line_url)
+        try:
+            with open('settings.ini', encoding="utf-8") as file:
+                line_url = file.readlines()[1]
+                regex = r"http.+"
+                url = re.findall(regex, line_url)
+        except Exception as inner_err:
+            logger.error(f"❌ Не удалось получить URL из settings.ini: {inner_err}")
+            url = []
 
-    if env_urls := os.getenv("URL_AVITO"):
+    # --- Переменные окружения имеют приоритет ---
+    env_urls = os.getenv("URL_AVITO")
+    if env_urls:
         url = env_urls.split(" ")
 
+    # --- Далее можешь ставить парсинг, логгеры и т.д. ---
+    # logger.info(url)  # ← для отладки
 
 
     chat_ids = config["Avito"]["CHAT_ID"].split(",")
